@@ -20,14 +20,13 @@ package org.apache.sling.commons.clam;
 
 import java.io.InputStream;
 
-import javax.annotation.Nonnull;
-
+import org.jetbrains.annotations.NotNull;
 import org.osgi.annotation.versioning.ProviderType;
 
 @ProviderType
 public interface ClamService {
 
-    @Nonnull
-    ScanResult scan(@Nonnull final InputStream data);
+    @NotNull
+    ScanResult scan(@NotNull final InputStream data);
 
 }

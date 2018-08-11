@@ -25,12 +25,11 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
-import javax.annotation.Nonnull;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.commons.clam.ClamService;
 import org.apache.sling.commons.clam.ScanResult;
 import org.apache.sling.commons.clam.ScanResult.Status;
+import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -89,8 +88,8 @@ public class ClamdService implements ClamService {
     }
 
     @Override
-    @Nonnull
-    public ScanResult scan(@Nonnull final InputStream inputStream) {
+    @NotNull
+    public ScanResult scan(@NotNull final InputStream inputStream) {
         try {
             final byte[] reply = doInstream(inputStream);
             return parseClamdReply(reply);

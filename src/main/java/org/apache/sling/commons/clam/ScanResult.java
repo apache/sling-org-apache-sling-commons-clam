@@ -18,6 +18,8 @@
  */
 package org.apache.sling.commons.clam;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
 
 @ProviderType
@@ -27,15 +29,17 @@ public class ScanResult {
 
     private final String message;
 
-    public ScanResult(final Status status, final String message) {
+    public ScanResult(@NotNull final Status status, @NotNull final String message) {
         this.status = status;
         this.message = message;
     }
 
+    @NotNull
     public Status getStatus() {
         return status;
     }
 
+    @NotNull
     public String getMessage() {
         return message;
     }
