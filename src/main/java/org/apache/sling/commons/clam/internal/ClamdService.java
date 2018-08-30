@@ -19,6 +19,7 @@
 package org.apache.sling.commons.clam.internal;
 
 import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -89,11 +90,11 @@ public class ClamdService implements ClamService {
 
     @Override
     @NotNull
-    public ScanResult scan(@NotNull final InputStream inputStream) {
+    public ScanResult scan(@NotNull final InputStream inputStream) throws IOException {
         try {
             final byte[] reply = doInstream(inputStream);
             return parseClamdReply(reply);
-        } catch (Exception e) {
+        } catch (InstreamSizeLimitExceededException e) {
             logger.error("doing INSTREAM failed", e);
             return new ScanResult(ScanResult.Status.ERROR, e.getMessage());
         }
@@ -114,7 +115,7 @@ public class ClamdService implements ClamService {
      * @param inputStream data sent to clamd in chunks
      * @return reply from clamd
      */
-    private byte[] doInstream(final InputStream inputStream) throws Exception {
+    private byte[] doInstream(final InputStream inputStream) throws IOException, InstreamSizeLimitExceededException {
         logger.info("connecting to clam daemon at {}:{} for scanning", configuration.clamd_host(), configuration.clamd_port());
         try (final Socket socket = new Socket(configuration.clamd_host(), configuration.clamd_port());
              final OutputStream out = new BufferedOutputStream(socket.getOutputStream());

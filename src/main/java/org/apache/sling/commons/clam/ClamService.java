@@ -18,6 +18,7 @@
  */
 package org.apache.sling.commons.clam;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +27,11 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface ClamService {
 
+    /**
+     * @param data The data to scan for malware
+     * @return The scan result from clam
+     */
     @NotNull
-    ScanResult scan(@NotNull final InputStream data);
+    ScanResult scan(@NotNull final InputStream data) throws IOException;
 
 }
