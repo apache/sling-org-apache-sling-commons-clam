@@ -24,6 +24,8 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public class ScanResult {
 
+    private final long timestamp = System.currentTimeMillis();
+
     private final Status status;
 
     private final String message;
@@ -31,6 +33,10 @@ public class ScanResult {
     public ScanResult(@NotNull final Status status, @NotNull final String message) {
         this.status = status;
         this.message = message;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 
     @NotNull
