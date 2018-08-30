@@ -4,7 +4,7 @@ This module is part of the [Apache Sling](https://sling.apache.org) project.
 
 Scans data for malware using [ClamAV](https://www.clamav.net).
 
-Integration tests require a running clam daemon and are not enabled by default.
+Integration tests require a running Clam daemon and are not enabled by default.
 
 ## EICAR
 

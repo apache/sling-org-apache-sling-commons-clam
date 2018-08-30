@@ -22,20 +22,20 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @ObjectClassDefinition(
-    name = "Apache Sling Commons Clam",
-    description = "Service for scanning data with Clam daemon."
+    name = "Apache Sling Commons Clamd Service",
+    description = "Service for scanning data with Clam daemon"
 )
 @interface ClamdServiceConfiguration {
 
     @AttributeDefinition(
         name = "clamd host",
-        description = "host where Clam AntiVirus Daemon is running"
+        description = "host where Clam daemon is running"
     )
     String clamd_host() default "localhost";
 
     @AttributeDefinition(
         name = "clamd port",
-        description = "port where Clam AntiVirus Daemon will listen on"
+        description = "port where Clam daemon will listen on"
     )
     int clamd_port() default 3310;
 
