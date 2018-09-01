@@ -29,7 +29,8 @@ public interface ClamService {
 
     /**
      * @param data The data to scan for malware
-     * @return The scan result from clam
+     * @return The scan result from Clam
+     * @throws IOException if scanning data or parsing reply fails
      */
     @NotNull
     ScanResult scan(@NotNull final InputStream data) throws IOException;
