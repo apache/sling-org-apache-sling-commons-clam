@@ -91,6 +91,15 @@
               </systemProperties>
             </configuration>
           </plugin>
+          <plugin>
+            <groupId>org.apache.rat</groupId>
+            <artifactId>apache-rat-plugin</artifactId>
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>**/eicar/**</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
         </plugins>
       </build>
     </profile>
