@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.commons.clam.ClamService;
@@ -52,6 +53,10 @@ import org.slf4j.LoggerFactory;
 public class ClamdService implements ClamService {
 
     private ClamdServiceConfiguration configuration;
+
+    private static final byte[] PING_COMMAND = "nPING\n".getBytes(StandardCharsets.US_ASCII);
+
+    private static final byte[] PONG_REPLY = "PONG\n".getBytes(StandardCharsets.US_ASCII);
 
     private static final byte[] INSTREAM_COMMAND = "nINSTREAM\n".getBytes(StandardCharsets.US_ASCII);
 
@@ -85,7 +90,7 @@ public class ClamdService implements ClamService {
 
     private void configure(final ClamdServiceConfiguration configuration) {
         this.configuration = configuration;
-        // TODO play ping pong on configuration change
+        playPingPong();
     }
 
     @Override
@@ -97,6 +102,36 @@ public class ClamdService implements ClamService {
         } catch (InstreamSizeLimitExceededException e) {
             logger.error("doing INSTREAM failed", e);
             return new ScanResult(ScanResult.Status.ERROR, e.getMessage());
+        }
+    }
+
+    private byte[] doPing() throws IOException {
+        logger.info("pinging clam daemon at {}:{}", configuration.clamd_host(), configuration.clamd_port());
+        try (final Socket socket = new Socket(configuration.clamd_host(), configuration.clamd_port());
+             final OutputStream out = new BufferedOutputStream(socket.getOutputStream());
+             final InputStream in = socket.getInputStream()) {
+
+            socket.setSoTimeout(configuration.connection_timeout());
+
+            // send command
+            out.write(PING_COMMAND);
+            out.flush();
+
+            return IOUtils.toByteArray(in);
+        }
+    }
+
+    private void playPingPong() {
+        try {
+            final byte[] reply = doPing();
+            if (Arrays.equals(reply, PONG_REPLY)) {
+                logger.info("clam daemon replied with PONG");
+            } else {
+                final String message = new String(reply, StandardCharsets.US_ASCII);
+                logger.error("clam daemon replied with unknown message: {}", message);
+            }
+        } catch (IOException e) {
+            logger.error("pinging clam daemon failed: {}", e.getMessage());
         }
     }
 
