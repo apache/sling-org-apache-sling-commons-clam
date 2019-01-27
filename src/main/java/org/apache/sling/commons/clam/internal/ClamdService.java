@@ -96,12 +96,13 @@ public class ClamdService implements ClamService {
     @Override
     @NotNull
     public ScanResult scan(@NotNull final InputStream inputStream) throws IOException {
+        final long started = System.currentTimeMillis();
         try {
             final byte[] reply = doInstream(inputStream);
-            return parseClamdReply(reply);
+            return parseClamdReply(reply, started);
         } catch (InstreamSizeLimitExceededException e) {
             logger.error("doing INSTREAM failed", e);
-            return new ScanResult(ScanResult.Status.ERROR, e.getMessage());
+            return new ScanResult(ScanResult.Status.ERROR, e.getMessage(), started);
         }
     }
 
@@ -195,17 +196,17 @@ public class ClamdService implements ClamService {
         }
     }
 
-    private ScanResult parseClamdReply(final byte[] reply) {
+    private ScanResult parseClamdReply(final byte[] reply, final long started) {
         final String message = new String(reply, StandardCharsets.US_ASCII).trim();
         logger.info("reply message from clam daemon: '{}'", message);
         if (message.matches(OK_REPLY_PATTERN)) {
-            return new ScanResult(Status.OK, message);
+            return new ScanResult(Status.OK, message, started);
         } else if (message.matches(FOUND_REPLY_PATTERN)) {
-            return new ScanResult(Status.FOUND, message);
+            return new ScanResult(Status.FOUND, message, started);
         } else if (message.matches(INSTREAM_SIZE_LIMIT_EXCEEDED_PATTERN)) {
-            return new ScanResult(Status.ERROR, message);
+            return new ScanResult(Status.ERROR, message, started);
         } else {
-            return new ScanResult(Status.UNKNOWN, message);
+            return new ScanResult(Status.UNKNOWN, message, started);
         }
     }
 
