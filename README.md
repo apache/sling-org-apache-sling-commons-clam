@@ -10,6 +10,7 @@ Scans data for malware using [ClamAV](https://www.clamav.net).
 
 Integration tests require a running Clam daemon and are not enabled by default.
 
+Please see [Apache Sling Clam](https://github.com/apache/sling-org-apache-sling-clam) for an integration into Apache Sling to scan data in JCR.
 
 ## EICAR
 
