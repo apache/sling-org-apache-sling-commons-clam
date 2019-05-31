@@ -96,13 +96,11 @@ public class ClamdService implements ClamService {
     @Override
     @NotNull
     public ScanResult scan(@NotNull final InputStream inputStream) throws IOException {
-        final long started = System.currentTimeMillis();
         try {
-            final byte[] reply = doInstream(inputStream);
-            return parseClamdReply(reply, started);
+            return doInstream(inputStream);
         } catch (InstreamSizeLimitExceededException e) {
             logger.error("doing INSTREAM failed", e);
-            return new ScanResult(ScanResult.Status.ERROR, e.getMessage(), started);
+            return new ScanResult(ScanResult.Status.ERROR, e.getMessage(), e.getStarted(), e.getSize());
         }
     }
 
@@ -149,10 +147,11 @@ public class ClamdService implements ClamService {
      * limit exceeded and close the connection.
      *
      * @param inputStream data sent to clamd in chunks
-     * @return reply from clamd
+     * @return scan result from clamd
      */
-    private byte[] doInstream(final InputStream inputStream) throws IOException, InstreamSizeLimitExceededException {
+    private ScanResult doInstream(final InputStream inputStream) throws IOException, InstreamSizeLimitExceededException {
         logger.info("connecting to clam daemon at {}:{} for scanning", configuration.clamd_host(), configuration.clamd_port());
+        final long started = System.currentTimeMillis();
         try (final Socket socket = new Socket(configuration.clamd_host(), configuration.clamd_port());
              final OutputStream out = new BufferedOutputStream(socket.getOutputStream());
              final InputStream in = socket.getInputStream()) {
@@ -179,7 +178,7 @@ public class ClamdService implements ClamService {
                 if (in.available() > 0) {
                     logger.info("total bytes sent: {}", total);
                     final byte[] reply = IOUtils.toByteArray(in);
-                    throw new InstreamSizeLimitExceededException(reply);
+                    throw new InstreamSizeLimitExceededException(reply, started, total);
                 }
 
                 read = inputStream.read(data);
@@ -192,21 +191,22 @@ public class ClamdService implements ClamService {
             out.flush();
 
             // return reply on complete
-            return IOUtils.toByteArray(in);
+            final byte[] reply = IOUtils.toByteArray(in);
+            return parseClamdReply(reply, started, total);
         }
     }
 
-    private ScanResult parseClamdReply(final byte[] reply, final long started) {
+    private ScanResult parseClamdReply(final byte[] reply, final long started, final long size) {
         final String message = new String(reply, StandardCharsets.US_ASCII).trim();
         logger.info("reply message from clam daemon: '{}'", message);
         if (message.matches(OK_REPLY_PATTERN)) {
-            return new ScanResult(Status.OK, message, started);
+            return new ScanResult(Status.OK, message, started, size);
         } else if (message.matches(FOUND_REPLY_PATTERN)) {
-            return new ScanResult(Status.FOUND, message, started);
+            return new ScanResult(Status.FOUND, message, started, size);
         } else if (message.matches(INSTREAM_SIZE_LIMIT_EXCEEDED_PATTERN)) {
-            return new ScanResult(Status.ERROR, message, started);
+            return new ScanResult(Status.ERROR, message, started, size);
         } else {
-            return new ScanResult(Status.UNKNOWN, message, started);
+            return new ScanResult(Status.UNKNOWN, message, started, size);
         }
     }
 

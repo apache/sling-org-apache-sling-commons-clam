@@ -32,10 +32,13 @@ public class ScanResult {
 
     private final long started;
 
-    public ScanResult(@NotNull final Status status, @NotNull final String message, long started) {
+    private final long size;
+
+    public ScanResult(@NotNull final Status status, @NotNull final String message, long started, long size) {
         this.status = status;
         this.message = message;
         this.started = started;
+        this.size = size;
     }
 
     public long getTimestamp() {
@@ -54,6 +57,10 @@ public class ScanResult {
 
     public long getStarted() {
         return started;
+    }
+
+    public long getSize() {
+        return size;
     }
 
     public boolean isOk() {
