@@ -20,30 +20,56 @@ package org.apache.sling.commons.clam.it.tests;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
 import java.util.Arrays;
 
 import org.apache.sling.testing.paxexam.TestSupport;
 import org.jetbrains.annotations.NotNull;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
+import org.testcontainers.containers.GenericContainer;
 
 import static org.apache.sling.testing.paxexam.SlingOptions.scr;
+import static org.apache.sling.testing.paxexam.SlingOptions.testcontainers;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.cm.ConfigurationAdminOptions.newConfiguration;
 
 public abstract class ClamTestSupport extends TestSupport {
 
+    private static GenericContainer clamContainer;
+
+    private static final String CLAM_CONTAINER_IMAGE_NAME = "mk0x/docker-clamav:alpine";
+
     @Configuration
     public Option[] configuration() {
+        final boolean testcontainer = Boolean.parseBoolean(System.getProperty("clamd.testcontainer", "true"));
+        final String host;
+        final Integer port;
+        if (testcontainer) {
+            clamContainer = new GenericContainer<>(CLAM_CONTAINER_IMAGE_NAME)
+                .withExposedPorts(3310)
+                .withStartupTimeout(Duration.ofMinutes(3));
+            clamContainer.start();
+            host = clamContainer.getContainerIpAddress();
+            port = clamContainer.getFirstMappedPort();
+        } else {
+            host = System.getProperty("clamd.host", "localhost");
+            port = Integer.parseInt(System.getProperty("clamd.port", "3310"));
+        }
         return new Option[]{
             baseConfiguration(),
             // Sling Commons Clam
+            newConfiguration("org.apache.sling.commons.clam.internal.ClamdService")
+                .put("clamd.host", host)
+                .put("clamd.port", port)
+                .asOption(),
             testBundle("bundle.filename"),
             mavenBundle().groupId("commons-io").artifactId("commons-io").versionAsInProject(),
             scr(),
             // testing
-            mavenBundle().groupId("org.apache.servicemix.bundles").artifactId("org.apache.servicemix.bundles.hamcrest").versionAsInProject(),
-            junitBundles(),
+            testcontainers(),
+            junitBundles()
         };
     }
 
