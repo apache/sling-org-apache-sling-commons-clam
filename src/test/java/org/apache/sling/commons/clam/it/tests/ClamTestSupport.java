@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import org.apache.sling.testing.paxexam.TestSupport;
+import org.jetbrains.annotations.NotNull;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 
@@ -56,7 +57,7 @@ public abstract class ClamTestSupport extends TestSupport {
         }
 
         @Override
-        public int read(byte[] bytes) throws IOException {
+        public int read(@NotNull byte[] bytes) throws IOException {
             Arrays.fill(bytes, (byte) 1);
             return bytes.length;
         }
