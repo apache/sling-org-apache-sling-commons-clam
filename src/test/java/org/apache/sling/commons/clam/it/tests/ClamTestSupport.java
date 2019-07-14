@@ -33,6 +33,7 @@ import static org.apache.sling.testing.paxexam.SlingOptions.scr;
 import static org.apache.sling.testing.paxexam.SlingOptions.testcontainers;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.cm.ConfigurationAdminOptions.newConfiguration;
 
 public abstract class ClamTestSupport extends TestSupport {
@@ -57,7 +58,7 @@ public abstract class ClamTestSupport extends TestSupport {
             host = System.getProperty("clamd.host", "localhost");
             port = Integer.parseInt(System.getProperty("clamd.port", "3310"));
         }
-        return new Option[]{
+        return options(
             baseConfiguration(),
             // Sling Commons Clam
             newConfiguration("org.apache.sling.commons.clam.internal.ClamdService")
@@ -70,7 +71,7 @@ public abstract class ClamTestSupport extends TestSupport {
             // testing
             testcontainers(),
             junitBundles()
-        };
+        );
     }
 
     protected class InfiniteInputStream extends InputStream {
