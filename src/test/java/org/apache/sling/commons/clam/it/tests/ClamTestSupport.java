@@ -50,7 +50,7 @@ public abstract class ClamTestSupport extends TestSupport {
         if (testcontainer) {
             clamContainer = new GenericContainer<>(CLAM_CONTAINER_IMAGE_NAME)
                 .withExposedPorts(3310)
-                .withStartupTimeout(Duration.ofMinutes(3));
+                .withStartupTimeout(Duration.ofMinutes(5));
             clamContainer.start();
             host = clamContainer.getContainerIpAddress();
             port = clamContainer.getFirstMappedPort();
