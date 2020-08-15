@@ -94,8 +94,7 @@ public class ClamdService implements ClamService {
     }
 
     @Override
-    @NotNull
-    public ScanResult scan(@NotNull final InputStream inputStream) throws IOException {
+    public @NotNull ScanResult scan(@NotNull final InputStream inputStream) throws IOException {
         try {
             return doInstream(inputStream);
         } catch (InstreamSizeLimitExceededException e) {
