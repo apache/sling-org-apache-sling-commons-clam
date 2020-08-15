@@ -19,22 +19,27 @@
 package org.apache.sling.commons.clam.it.tests;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.commons.clam.ClamService;
 import org.apache.sling.commons.clam.ScanResult;
+import org.apache.sling.commons.content.analyzing.ContentAnalyzer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.exam.util.PathUtils;
 
 import static org.junit.Assert.assertEquals;
@@ -47,7 +52,19 @@ public class ClamdServiceIT extends ClamTestSupport {
     @Inject
     private ClamService clamService;
 
+    @Inject
+    @Filter(value = "(&(operation=malware detection)(provider=clamd))")
+    private ContentAnalyzer contentAnalyzer;
+
     private static final String INSTREAM_SIZE_LIMIT_EXCEEDED_ERROR_MESSAGE = "INSTREAM size limit exceeded. ERROR";
+
+    private byte[] readEicarFile() throws IOException {
+        final byte[] xaa = Files.readAllBytes(Paths.get(PathUtils.getBaseDir(), "src/test/resources/eicar/eicarcom2.zip/xaa"));
+        final byte[] xab = Files.readAllBytes(Paths.get(PathUtils.getBaseDir(), "src/test/resources/eicar/eicarcom2.zip/xab"));
+        return ByteBuffer.allocate(xaa.length + xab.length).put(xaa).put(xab).array();
+    }
+
+    // ClamService
 
     @Test
     public void testClamService() {
@@ -65,9 +82,7 @@ public class ClamdServiceIT extends ClamTestSupport {
 
     @Test
     public void testScan_eicarcom2_zip() throws Exception {
-        final byte[] xaa = Files.readAllBytes(Paths.get(PathUtils.getBaseDir(), "src/test/resources/eicar/eicarcom2.zip/xaa"));
-        final byte[] xab = Files.readAllBytes(Paths.get(PathUtils.getBaseDir(), "src/test/resources/eicar/eicarcom2.zip/xab"));
-        byte[] eicarcom2_zip = ByteBuffer.allocate(xaa.length + xab.length).put(xaa).put(xab).array();
+        final byte[] eicarcom2_zip = readEicarFile();
         try (final InputStream fileInputStream = new ByteArrayInputStream(eicarcom2_zip)) {
             final ScanResult result = clamService.scan(fileInputStream);
             assertEquals(ScanResult.Status.FOUND, result.getStatus());
@@ -80,6 +95,42 @@ public class ClamdServiceIT extends ClamTestSupport {
             final ScanResult result = clamService.scan(inputStream);
             assertEquals(ScanResult.Status.ERROR, result.getStatus());
             assertEquals(INSTREAM_SIZE_LIMIT_EXCEEDED_ERROR_MESSAGE, result.getMessage());
+        }
+    }
+
+    // ContentAnalyzer
+
+    @Test
+    public void testContentAnalyzer() {
+        assertNotNull(contentAnalyzer);
+    }
+
+    @Test
+    public void testAnalyze_ok() throws Exception {
+        final String data = "ok – no malware here";
+        final Map<String, Object> report = new HashMap<>();
+        try (final InputStream inputStream = IOUtils.toInputStream(data, StandardCharsets.UTF_8)) {
+            contentAnalyzer.analyze(inputStream, null, report).get();
+            assertEquals(ScanResult.Status.OK, report.get("sling.commons.clam.scanresult.status"));
+        }
+    }
+
+    @Test
+    public void testAnalyze_eicarcom2_zip() throws Exception {
+        final byte[] eicarcom2_zip = readEicarFile();
+        final Map<String, Object> report = new HashMap<>();
+        try (final InputStream inputStream = new ByteArrayInputStream(eicarcom2_zip)) {
+            contentAnalyzer.analyze(inputStream, null, report).get();
+            assertEquals(ScanResult.Status.FOUND, report.get("sling.commons.clam.scanresult.status"));
+        }
+    }
+
+    @Test
+    public void testAnalyze_infiniteStream() throws Exception {
+        final Map<String, Object> report = new HashMap<>();
+        try (final InputStream inputStream = new InfiniteInputStream()) {
+            contentAnalyzer.analyze(inputStream, null, report).get();
+            assertEquals(INSTREAM_SIZE_LIMIT_EXCEEDED_ERROR_MESSAGE, report.get("sling.commons.clam.scanresult.message"));
         }
     }
 

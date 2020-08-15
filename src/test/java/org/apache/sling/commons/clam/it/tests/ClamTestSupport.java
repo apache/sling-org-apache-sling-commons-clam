@@ -67,6 +67,7 @@ public abstract class ClamTestSupport extends TestSupport {
                 .asOption(),
             testBundle("bundle.filename"),
             mavenBundle().groupId("commons-io").artifactId("commons-io").versionAsInProject(),
+            mavenBundle().groupId("org.apache.sling").artifactId("org.apache.sling.commons.content.analyzing").versionAsInProject(),
             scr(),
             // testing
             testcontainers(),

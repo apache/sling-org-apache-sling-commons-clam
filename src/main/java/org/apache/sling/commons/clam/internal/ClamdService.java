@@ -26,12 +26,17 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.commons.clam.ClamService;
 import org.apache.sling.commons.clam.ScanResult;
 import org.apache.sling.commons.clam.ScanResult.Status;
+import org.apache.sling.commons.content.analyzing.ContentAnalyzer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -44,13 +49,16 @@ import org.slf4j.LoggerFactory;
 @Component(
     property = {
         Constants.SERVICE_DESCRIPTION + "=Sling Commons Clamd Service",
-        Constants.SERVICE_VENDOR + "=The Apache Software Foundation"
+        Constants.SERVICE_VENDOR + "=The Apache Software Foundation",
+        "operation=malware detection",
+        "provider=clam",
+        "provider=clamd",
     }
 )
 @Designate(
     ocd = ClamdServiceConfiguration.class
 )
-public class ClamdService implements ClamService {
+public class ClamdService implements ClamService, ContentAnalyzer {
 
     private ClamdServiceConfiguration configuration;
 
@@ -101,6 +109,26 @@ public class ClamdService implements ClamService {
             logger.error("doing INSTREAM failed", e);
             return new ScanResult(ScanResult.Status.ERROR, e.getMessage(), e.getStarted(), e.getSize());
         }
+    }
+
+    @Override
+    public @NotNull CompletableFuture<Void> analyze(@NotNull InputStream input, @Nullable Map<String, Object> parameters, @NotNull Map<String, Object> report) {
+        return CompletableFuture.runAsync(() -> {
+            try {
+                scan(input, report);
+            } catch (IOException e) {
+                throw new CompletionException(e);
+            }
+        });
+    }
+
+    private void scan(@NotNull final InputStream inputStream, @NotNull Map<String, Object> report) throws IOException {
+        final ScanResult scanResult = scan(inputStream);
+        report.put("sling.commons.clam.scanresult.timestamp", scanResult.getTimestamp());
+        report.put("sling.commons.clam.scanresult.status", scanResult.getStatus());
+        report.put("sling.commons.clam.scanresult.message", scanResult.getMessage());
+        report.put("sling.commons.clam.scanresult.started", scanResult.getStarted());
+        report.put("sling.commons.clam.scanresult.size", scanResult.getSize());
     }
 
     private byte[] doPing() throws IOException {
