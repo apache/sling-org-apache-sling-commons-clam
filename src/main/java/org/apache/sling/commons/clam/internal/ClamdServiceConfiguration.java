@@ -25,6 +25,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
     name = "Apache Sling Commons Clamd Service",
     description = "Service for scanning data with Clam daemon"
 )
+@SuppressWarnings("java:S100")
 @interface ClamdServiceConfiguration {
 
     @AttributeDefinition(
