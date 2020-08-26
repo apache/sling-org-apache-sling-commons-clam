@@ -34,6 +34,7 @@ import static org.apache.sling.testing.paxexam.SlingOptions.testcontainers;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.CoreOptions.vmOption;
 import static org.ops4j.pax.exam.cm.ConfigurationAdminOptions.newConfiguration;
 
 public abstract class ClamTestSupport extends TestSupport {
@@ -71,7 +72,8 @@ public abstract class ClamTestSupport extends TestSupport {
             scr(),
             // testing
             testcontainers(),
-            junitBundles()
+            junitBundles(),
+            vmOption(System.getProperty("jacoco.command"))
         );
     }
 
