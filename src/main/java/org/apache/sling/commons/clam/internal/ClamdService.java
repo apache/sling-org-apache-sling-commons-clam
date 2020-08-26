@@ -76,7 +76,7 @@ public class ClamdService implements ClamService, ContentAnalyzer {
 
     private final Logger logger = LoggerFactory.getLogger(ClamdService.class);
 
-    public ClamdService() {
+    public ClamdService() { //
     }
 
     @Activate
