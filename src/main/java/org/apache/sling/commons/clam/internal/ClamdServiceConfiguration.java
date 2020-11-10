@@ -52,4 +52,16 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
     )
     int chunk_length() default 2048;
 
+    @AttributeDefinition(
+        name = "content analyzer operation",
+        description = "operation(s) this analyzer performs"
+    )
+    String[] content_analyzer_operation() default {"malware detection"};
+
+    @AttributeDefinition(
+        name = "content analyzer provider",
+        description = "provider which performs the operation(s)"
+    )
+    String[] content_analyzer_provider() default {"clam", "clamd"};
+
 }

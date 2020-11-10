@@ -49,10 +49,7 @@ import org.slf4j.LoggerFactory;
 @Component(
     property = {
         Constants.SERVICE_DESCRIPTION + "=Sling Commons Clamd Service",
-        Constants.SERVICE_VENDOR + "=The Apache Software Foundation",
-        "operation=malware detection",
-        "provider=clam",
-        "provider=clamd",
+        Constants.SERVICE_VENDOR + "=The Apache Software Foundation"
     }
 )
 @Designate(

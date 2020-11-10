@@ -53,7 +53,7 @@ public class ClamdServiceIT extends ClamTestSupport {
     private ClamService clamService;
 
     @Inject
-    @Filter(value = "(&(operation=malware detection)(provider=clamd))")
+    @Filter(value = "(&(content.analyzer.operation=malware detection)(content.analyzer.provider=clamd))")
     private ContentAnalyzer contentAnalyzer;
 
     private static final String INSTREAM_SIZE_LIMIT_EXCEEDED_ERROR_MESSAGE = "INSTREAM size limit exceeded. ERROR";
