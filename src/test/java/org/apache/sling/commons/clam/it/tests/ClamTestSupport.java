@@ -41,7 +41,7 @@ public abstract class ClamTestSupport extends TestSupport {
 
     private static GenericContainer clamContainer;
 
-    private static final String CLAM_CONTAINER_IMAGE_NAME = "mk0x/docker-clamav:alpine";
+    private static final String CLAM_CONTAINER_IMAGE_NAME = "mk0x/docker-clamav:buster-slim";
 
     @Configuration
     public Option[] configuration() {
