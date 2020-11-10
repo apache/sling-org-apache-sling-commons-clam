@@ -13,7 +13,7 @@ Please see [Apache Sling Clam](https://github.com/apache/sling-org-apache-sling-
 
 ## Integration Tests
 
-Integration tests require a running Clam daemon. By default a Docker container (`mk0x/docker-clamav:alpine`) is started via [Testcontainers](https://www.testcontainers.org/) and local [Docker](https://www.docker.com/) Engine to provide the Clam daemon.
+Integration tests require a running Clam daemon. By default a Docker container is started via [Testcontainers](https://www.testcontainers.org/) and local [Docker](https://www.docker.com/) Engine to provide the Clam daemon.
 
 
 ### Use external Clam daemon
