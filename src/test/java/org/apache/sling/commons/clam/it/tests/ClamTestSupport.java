@@ -77,7 +77,7 @@ public abstract class ClamTestSupport extends TestSupport {
         );
     }
 
-    protected class InfiniteInputStream extends InputStream {
+    protected static class InfiniteInputStream extends InputStream {
 
         @Override
         public int read() throws IOException {
