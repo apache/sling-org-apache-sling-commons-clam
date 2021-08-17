@@ -21,6 +21,9 @@ package org.apache.sling.commons.clam;
 import org.jetbrains.annotations.NotNull;
 import org.osgi.annotation.versioning.ProviderType;
 
+/**
+ * Scan result contains the message from Clam, the parsed status and additional metadata.
+ */
 @ProviderType
 public class ScanResult {
 
@@ -67,6 +70,9 @@ public class ScanResult {
         return Status.OK.equals(status);
     }
 
+    /**
+     * Status based on reply message from Clam (<code>OK</code>, <code>FOUND</code>, <code>ERROR</code>) or <code>UNKNOWN</code> if parsing reply message failed.
+     */
     public enum Status {
         OK,
         FOUND,

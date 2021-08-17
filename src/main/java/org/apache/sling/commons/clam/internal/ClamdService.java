@@ -46,6 +46,9 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Service for scanning data with Clam daemon.<br>Connections are established via TCP/IP.
+ */
 @Component(
     property = {
         Constants.SERVICE_DESCRIPTION + "=Sling Commons Clamd Service",

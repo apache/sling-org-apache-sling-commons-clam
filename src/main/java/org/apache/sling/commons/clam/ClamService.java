@@ -24,6 +24,9 @@ import java.io.InputStream;
 import org.jetbrains.annotations.NotNull;
 import org.osgi.annotation.versioning.ProviderType;
 
+/**
+ * Service to scan data for malware with ClamAV.
+ */
 @ProviderType
 public interface ClamService {
 
