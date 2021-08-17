@@ -16,6 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+/**
+ * Provides the Apache Sling Commons Clam API.
+ */
 @Version("2.0.0")
 package org.apache.sling.commons.clam;
 
