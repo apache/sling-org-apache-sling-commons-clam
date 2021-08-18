@@ -48,13 +48,11 @@ public class ScanResult {
         return timestamp;
     }
 
-    @NotNull
-    public Status getStatus() {
+    public @NotNull Status getStatus() {
         return status;
     }
 
-    @NotNull
-    public String getMessage() {
+    public @NotNull String getMessage() {
         return message;
     }
 
