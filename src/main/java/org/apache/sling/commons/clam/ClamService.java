@@ -37,6 +37,6 @@ public interface ClamService {
      * @return The scan result from Clam
      * @throws IOException if scanning data or parsing reply fails
      */
-    @NotNull ScanResult scan(@NotNull final InputStream data) throws IOException;
+    public abstract @NotNull ScanResult scan(@NotNull final InputStream data) throws IOException;
 
 }
