@@ -74,6 +74,9 @@ public final class ClamdService implements ClamService, ContentAnalyzer {
 
     private static final String INSTREAM_SIZE_LIMIT_EXCEEDED_PATTERN = "INSTREAM size limit exceeded. ERROR";
 
+    // length is the size of the following data in bytes expressed as a 4 byte unsigned integer in network byte order
+    private static final int CHUNK_LENGTH_DATUM_SIZE = 4;
+
     private final Logger logger = LoggerFactory.getLogger(ClamdService.class);
 
     public ClamdService() { //
@@ -196,7 +199,7 @@ public final class ClamdService implements ClamService, ContentAnalyzer {
             while (read >= 0) {
                 logger.trace("current chunk length: {}", read);
                 total = total + read;
-                final byte[] length = ByteBuffer.allocate(4).putInt(read).array();
+                final byte[] length = ByteBuffer.allocate(CHUNK_LENGTH_DATUM_SIZE).putInt(read).array();
 
                 out.write(length);
                 out.write(data, 0, read);
