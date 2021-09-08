@@ -133,9 +133,9 @@ public class ClamdService implements ClamService, ContentAnalyzer {
 
     private byte[] doPing() throws IOException {
         logger.info("pinging clam daemon at {}:{}", configuration.clamd_host(), configuration.clamd_port());
-        try (final Socket socket = new Socket(configuration.clamd_host(), configuration.clamd_port());
-             final OutputStream out = new BufferedOutputStream(socket.getOutputStream());
-             final InputStream in = socket.getInputStream()) {
+        try (Socket socket = new Socket(configuration.clamd_host(), configuration.clamd_port());
+             OutputStream out = new BufferedOutputStream(socket.getOutputStream());
+             InputStream in = socket.getInputStream()) {
 
             socket.setSoTimeout(configuration.connection_timeout());
 
@@ -179,9 +179,9 @@ public class ClamdService implements ClamService, ContentAnalyzer {
     private ScanResult doInstream(final InputStream inputStream) throws IOException, InstreamSizeLimitExceededException {
         logger.info("connecting to clam daemon at {}:{} for scanning", configuration.clamd_host(), configuration.clamd_port());
         final long started = System.currentTimeMillis();
-        try (final Socket socket = new Socket(configuration.clamd_host(), configuration.clamd_port());
-             final OutputStream out = new BufferedOutputStream(socket.getOutputStream());
-             final InputStream in = socket.getInputStream()) {
+        try (Socket socket = new Socket(configuration.clamd_host(), configuration.clamd_port());
+             OutputStream out = new BufferedOutputStream(socket.getOutputStream());
+             InputStream in = socket.getInputStream()) {
 
             socket.setSoTimeout(configuration.connection_timeout());
 
