@@ -226,15 +226,17 @@ public final class ClamdService implements ClamService, ContentAnalyzer {
     private ScanResult parseClamdReply(final byte[] reply, final long started, final long size) {
         final String message = new String(reply, StandardCharsets.US_ASCII).trim();
         logger.info("reply message from clam daemon: '{}'", message);
+        final ScanResult result;
         if (message.matches(OK_REPLY_PATTERN)) {
-            return new ScanResult(Status.OK, message, started, size);
+            result = new ScanResult(Status.OK, message, started, size);
         } else if (message.matches(FOUND_REPLY_PATTERN)) {
-            return new ScanResult(Status.FOUND, message, started, size);
+            result = new ScanResult(Status.FOUND, message, started, size);
         } else if (message.matches(INSTREAM_SIZE_LIMIT_EXCEEDED_PATTERN)) {
-            return new ScanResult(Status.ERROR, message, started, size);
+            result = new ScanResult(Status.ERROR, message, started, size);
         } else {
-            return new ScanResult(Status.UNKNOWN, message, started, size);
+            result = new ScanResult(Status.UNKNOWN, message, started, size);
         }
+        return result;
     }
 
 }
