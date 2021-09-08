@@ -31,6 +31,8 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface ClamService {
 
     /**
+     * Scans the given data for malware and returns the scan result.
+     *
      * @param data The data to scan for malware
      * @return The scan result from Clam
      * @throws IOException if scanning data or parsing reply fails
