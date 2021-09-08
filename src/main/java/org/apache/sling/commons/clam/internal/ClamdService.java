@@ -190,7 +190,7 @@ public final class ClamdService implements ClamService, ContentAnalyzer {
             out.flush();
 
             // send data in chunks
-            byte[] data = new byte[configuration.chunk_length()];
+            final byte[] data = new byte[configuration.chunk_length()];
             long total = 0;
             int read = inputStream.read(data);
             while (read >= 0) {
