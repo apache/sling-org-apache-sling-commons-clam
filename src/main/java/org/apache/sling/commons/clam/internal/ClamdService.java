@@ -60,8 +60,6 @@ import org.slf4j.LoggerFactory;
 )
 public final class ClamdService implements ClamService, ContentAnalyzer {
 
-    private ClamdServiceConfiguration configuration;
-
     private static final byte[] PING_COMMAND = "nPING\n".getBytes(StandardCharsets.US_ASCII);
 
     private static final byte[] PONG_REPLY = "PONG\n".getBytes(StandardCharsets.US_ASCII);
@@ -76,6 +74,8 @@ public final class ClamdService implements ClamService, ContentAnalyzer {
 
     // length is the size of the following data in bytes expressed as a 4 byte unsigned integer in network byte order
     private static final int CHUNK_LENGTH_DATUM_SIZE = 4;
+
+    private ClamdServiceConfiguration configuration;
 
     private final Logger logger = LoggerFactory.getLogger(ClamdService.class);
 
