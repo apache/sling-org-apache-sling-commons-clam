@@ -21,4 +21,5 @@
 <suppressions>
   <suppress checks="MissingJavadocMethod" files=".*\/internal\/.*\.java"/>
   <suppress checks="OverloadMethodsDeclarationOrder" files=".*\/ClamdService\.java"/>
+  <suppress checks="MultipleStringLiterals" files=".*\/ClamdService\.java"/>
 </suppressions>
