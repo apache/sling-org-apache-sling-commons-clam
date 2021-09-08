@@ -112,7 +112,7 @@ public class ClamdService implements ClamService, ContentAnalyzer {
     }
 
     @Override
-    public @NotNull CompletableFuture<Void> analyze(@NotNull InputStream input, @Nullable Map<String, Object> parameters, @NotNull Map<String, Object> report) {
+    public @NotNull CompletableFuture<Void> analyze(@NotNull final InputStream input, @Nullable final Map<String, Object> parameters, @NotNull final Map<String, Object> report) {
         return CompletableFuture.runAsync(() -> {
             try {
                 scan(input, report);
@@ -122,7 +122,7 @@ public class ClamdService implements ClamService, ContentAnalyzer {
         });
     }
 
-    private void scan(@NotNull final InputStream inputStream, @NotNull Map<String, Object> report) throws IOException {
+    private void scan(@NotNull final InputStream inputStream, @NotNull final Map<String, Object> report) throws IOException {
         final ScanResult scanResult = scan(inputStream);
         report.put("sling.commons.clam.scanresult.timestamp", scanResult.getTimestamp());
         report.put("sling.commons.clam.scanresult.status", scanResult.getStatus());

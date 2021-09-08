@@ -26,7 +26,7 @@ class InstreamSizeLimitExceededException extends Exception {
 
     private final long size;
 
-    InstreamSizeLimitExceededException(final byte[] reply, long started, long size) {
+    InstreamSizeLimitExceededException(final byte[] reply, final long started, final long size) {
         super(new String(reply, StandardCharsets.US_ASCII).trim());
         this.started = started;
         this.size = size;

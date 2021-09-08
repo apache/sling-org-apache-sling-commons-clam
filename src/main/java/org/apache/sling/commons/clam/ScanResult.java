@@ -45,7 +45,7 @@ public class ScanResult {
      * @param started The start time of the scan
      * @param size    The number of bytes sent to Clam for scanning
      */
-    public ScanResult(@NotNull final Status status, @NotNull final String message, long started, long size) {
+    public ScanResult(@NotNull final Status status, @NotNull final String message, final long started, final long size) {
         this.status = status;
         this.message = message;
         this.started = started;
