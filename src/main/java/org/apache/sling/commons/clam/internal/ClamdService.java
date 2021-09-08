@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
 @Designate(
     ocd = ClamdServiceConfiguration.class
 )
-public class ClamdService implements ClamService, ContentAnalyzer {
+public final class ClamdService implements ClamService, ContentAnalyzer {
 
     private ClamdServiceConfiguration configuration;
 
