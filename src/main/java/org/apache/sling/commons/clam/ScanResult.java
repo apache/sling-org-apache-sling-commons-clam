@@ -37,6 +37,14 @@ public class ScanResult {
 
     private final long size;
 
+    /**
+     * Creates a new <code>ScanResult</code> with the given initial parameters.
+     *
+     * @param status  The parsed status from Clam
+     * @param message The message from Clam
+     * @param started The start time of the scan
+     * @param size    The number of bytes sent to Clam for scanning
+     */
     public ScanResult(@NotNull final Status status, @NotNull final String message, long started, long size) {
         this.status = status;
         this.message = message;
@@ -44,26 +52,56 @@ public class ScanResult {
         this.size = size;
     }
 
+    /**
+     * Returns the timestamp of the scan result.
+     *
+     * @return The time in milliseconds the scan result was created
+     */
     public long getTimestamp() {
         return timestamp;
     }
 
+    /**
+     * Returns the parsed status from Clam.
+     *
+     * @return The parsed status from Clam
+     */
     public @NotNull Status getStatus() {
         return status;
     }
 
+    /**
+     * Returns the message from Clam.
+     *
+     * @return The message from Clam
+     */
     public @NotNull String getMessage() {
         return message;
     }
 
+    /**
+     * Returns the start time of the scan.
+     *
+     * @return The time in milliseconds the scan was started
+     */
     public long getStarted() {
         return started;
     }
 
+    /**
+     * Returns the size of data sent to Clam for scanning.
+     *
+     * @return The number of bytes sent to Clam
+     */
     public long getSize() {
         return size;
     }
 
+    /**
+     * Returns <code>true</code> when scanning was successful and no malware was found by Clam in sent data.
+     *
+     * @return <code>true</code> if status is <code>OK</code>, otherwise <code>false</code>
+     */
     public boolean isOk() {
         return Status.OK.equals(status);
     }
