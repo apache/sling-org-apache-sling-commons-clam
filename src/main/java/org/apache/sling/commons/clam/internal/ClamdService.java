@@ -83,18 +83,21 @@ public final class ClamdService implements ClamService, ContentAnalyzer {
     }
 
     @Activate
+    @SuppressWarnings("unused")
     private void activate(final ClamdServiceConfiguration configuration) {
         logger.debug("activating");
         configure(configuration);
     }
 
     @Modified
+    @SuppressWarnings("unused")
     private void modified(final ClamdServiceConfiguration configuration) {
         logger.debug("modifying");
         configure(configuration);
     }
 
     @Deactivate
+    @SuppressWarnings("unused")
     private void deactivate() {
         logger.debug("deactivating");
     }
