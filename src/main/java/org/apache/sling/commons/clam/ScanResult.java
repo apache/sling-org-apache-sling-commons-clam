@@ -109,7 +109,7 @@ public class ScanResult {
     /**
      * Status based on reply message from Clam (<code>OK</code>, <code>FOUND</code>, <code>ERROR</code>) or <code>UNKNOWN</code> if parsing reply message failed.
      */
-    public enum Status {
+    public static enum Status {
         OK,
         FOUND,
         ERROR,
