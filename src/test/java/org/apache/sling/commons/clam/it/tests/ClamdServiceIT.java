@@ -42,8 +42,9 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.exam.util.PathUtils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -68,7 +69,7 @@ public class ClamdServiceIT extends ClamTestSupport {
 
     @Test
     public void testClamService() {
-        assertNotNull(clamService);
+        assertThat(clamService, notNullValue());
     }
 
     @Test
@@ -76,7 +77,7 @@ public class ClamdServiceIT extends ClamTestSupport {
         final String data = "ok – no malware here";
         try (final InputStream inputStream = IOUtils.toInputStream(data, StandardCharsets.UTF_8)) {
             final ScanResult result = clamService.scan(inputStream);
-            assertEquals(ScanResult.Status.OK, result.getStatus());
+            assertThat(result.getStatus(), is(ScanResult.Status.OK));
         }
     }
 
@@ -85,7 +86,7 @@ public class ClamdServiceIT extends ClamTestSupport {
         final byte[] eicarcom2_zip = readEicarFile();
         try (final InputStream fileInputStream = new ByteArrayInputStream(eicarcom2_zip)) {
             final ScanResult result = clamService.scan(fileInputStream);
-            assertEquals(ScanResult.Status.FOUND, result.getStatus());
+            assertThat(result.getStatus(), is(ScanResult.Status.FOUND));
         }
     }
 
@@ -93,8 +94,8 @@ public class ClamdServiceIT extends ClamTestSupport {
     public void testScan_infiniteStream() throws Exception {
         try (final InputStream inputStream = new InfiniteInputStream()) {
             final ScanResult result = clamService.scan(inputStream);
-            assertEquals(ScanResult.Status.ERROR, result.getStatus());
-            assertEquals(INSTREAM_SIZE_LIMIT_EXCEEDED_ERROR_MESSAGE, result.getMessage());
+            assertThat(result.getStatus(), is(ScanResult.Status.ERROR));
+            assertThat(result.getMessage(), is(INSTREAM_SIZE_LIMIT_EXCEEDED_ERROR_MESSAGE));
         }
     }
 
@@ -102,7 +103,7 @@ public class ClamdServiceIT extends ClamTestSupport {
 
     @Test
     public void testContentAnalyzer() {
-        assertNotNull(contentAnalyzer);
+        assertThat(contentAnalyzer, notNullValue());
     }
 
     @Test
@@ -111,7 +112,7 @@ public class ClamdServiceIT extends ClamTestSupport {
         final Map<String, Object> report = new HashMap<>();
         try (final InputStream inputStream = IOUtils.toInputStream(data, StandardCharsets.UTF_8)) {
             contentAnalyzer.analyze(inputStream, null, report).get();
-            assertEquals(ScanResult.Status.OK, report.get("sling.commons.clam.scanresult.status"));
+            assertThat(report.get("sling.commons.clam.scanresult.status"), is(ScanResult.Status.OK));
         }
     }
 
@@ -121,7 +122,7 @@ public class ClamdServiceIT extends ClamTestSupport {
         final Map<String, Object> report = new HashMap<>();
         try (final InputStream inputStream = new ByteArrayInputStream(eicarcom2_zip)) {
             contentAnalyzer.analyze(inputStream, null, report).get();
-            assertEquals(ScanResult.Status.FOUND, report.get("sling.commons.clam.scanresult.status"));
+            assertThat(report.get("sling.commons.clam.scanresult.status"), is(ScanResult.Status.FOUND));
         }
     }
 
@@ -130,7 +131,7 @@ public class ClamdServiceIT extends ClamTestSupport {
         final Map<String, Object> report = new HashMap<>();
         try (final InputStream inputStream = new InfiniteInputStream()) {
             contentAnalyzer.analyze(inputStream, null, report).get();
-            assertEquals(INSTREAM_SIZE_LIMIT_EXCEEDED_ERROR_MESSAGE, report.get("sling.commons.clam.scanresult.message"));
+            assertThat(report.get("sling.commons.clam.scanresult.message"), is(INSTREAM_SIZE_LIMIT_EXCEEDED_ERROR_MESSAGE));
         }
     }
 

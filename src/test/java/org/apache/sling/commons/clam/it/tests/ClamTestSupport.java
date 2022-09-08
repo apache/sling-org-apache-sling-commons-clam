@@ -22,23 +22,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.Objects;
 
 import org.apache.sling.testing.paxexam.TestSupport;
 import org.jetbrains.annotations.NotNull;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.options.OptionalCompositeOption;
-import org.ops4j.pax.exam.options.extra.VMOption;
 import org.testcontainers.containers.GenericContainer;
 
 import static org.apache.sling.testing.paxexam.SlingOptions.scr;
 import static org.apache.sling.testing.paxexam.SlingOptions.testcontainers;
-import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.vmOption;
-import static org.ops4j.pax.exam.CoreOptions.when;
 import static org.ops4j.pax.exam.cm.ConfigurationAdminOptions.newConfiguration;
 
 public abstract class ClamTestSupport extends TestSupport {
@@ -75,17 +69,8 @@ public abstract class ClamTestSupport extends TestSupport {
             mavenBundle().groupId("org.apache.sling").artifactId("org.apache.sling.commons.content.analyzing").versionAsInProject(),
             scr(),
             // testing
-            testcontainers(),
-            junitBundles(),
-            jacoco() // remove with Testing PaxExam 4.0
+            testcontainers()
         );
-    }
-
-    // remove with Testing PaxExam 4.0
-    protected OptionalCompositeOption jacoco() {
-        final String jacocoCommand = System.getProperty("jacoco.command");
-        final VMOption option = Objects.nonNull(jacocoCommand) && !jacocoCommand.trim().isEmpty() ? vmOption(jacocoCommand) : null;
-        return when(Objects.nonNull(option)).useOptions(option);
     }
 
     protected static class InfiniteInputStream extends InputStream {
